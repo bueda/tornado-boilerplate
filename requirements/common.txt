@@ -1,0 +1,6 @@
+django==1.2.3
+simplejson==2.1.1
+South==0.7.1
+celery==2.0.3
+django-celery==2.0.3
+http://bueda.public.s3.amazonaws.com/commonware-f3164a7.tar.gz
