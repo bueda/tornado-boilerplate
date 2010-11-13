@@ -18,8 +18,8 @@ were the primary inspiration for this layout.
         apps/
             foo/
                 templates/
-                templates/foo/
-                templates/foo/foo.html
+                     foo/
+                        foo.html
                 models.py
                 views.py
                 forms.py
