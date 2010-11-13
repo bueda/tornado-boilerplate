@@ -15,33 +15,32 @@ were the primary inspiration for this layout.
 ## Directory Structure
 
     django-boilerplate/
-    ....apps/
-        ....foo/
-            ....templates/
-            ....templates/foo/
-            ....templates/foo/foo.html
-            ....models.py
-            ....views.py
-            ....forms.py
-    ....lib/
-    ....logconfig/
-    ....media/
-        ....css/
-            ....vendor/
-        ....js/
-            ....vendor/
-        ....images/
-    ....requirements/
-        ....common.txt
-        ....dev.txt
-        ....production.txt
-    ....templates/
-    ....vendor/
-    ....environment.py
-    ....fabfile.py
-    ....manage.py
-    ....settings.py
-
+        apps/
+            foo/
+                templates/
+                templates/foo/
+                templates/foo/foo.html
+                models.py
+                views.py
+                forms.py
+        lib/
+        logconfig/
+        media/
+            css/
+                vendor/
+            js/
+                vendor/
+            images/
+        requirements/
+            common.txt
+            dev.txt
+            production.txt
+        templates/
+        vendor/
+        environment.py
+        fabfile.py
+        manage.py
+        settings.py
 
 ### apps
 
