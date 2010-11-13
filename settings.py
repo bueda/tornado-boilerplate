@@ -1,27 +1,23 @@
+import logging
+import tornado
+import tornado.template
 import os
-import logging, logging.handlers
+from tornado.options import define, options
 
 import environment
 import logconfig
-
-# If using a separate Python package (e.g. a submodule in vendor/) to share
-# logic between applications, you can also share settings. Just create another
-# settings file in your package and import it like so:
-#
-#     from comrade.core.settings import * 
-#
-# The top half of this settings.py file is copied from comrade for clarity. We
-# use the import method in actual deployments.
 
 # Make filepaths relative to settings.
 path = lambda root,*a: os.path.join(root, *a)
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
+define("port", default=8888, help="run on the given port", type=int)
+define("config", default=None, help="tornado config file")
+define("debug", default=False, help="debug mode")
+tornado.options.parse_command_line()
 
-# List of admin e-mails - we use Hoptoad to collect error notifications, so this
-# is usually blank.
-ADMINS = ()
-MANAGERS = ADMINS
+MEDIA_ROOT = path(ROOT, 'media')
+TEMPLATE_ROOT = path(ROOT, 'templates')
 
 # Deployment Configuration
 
@@ -42,252 +38,35 @@ if 'DEPLOYMENT_TYPE' in os.environ:
 else:
     DEPLOYMENT = DeploymentType.SOLO
 
-SITE_ID = DeploymentType.dict[DEPLOYMENT]
+settings = {}
+settings['debug'] = DEPLOYMENT != DeploymentType.PRODUCTION or options.debug
+settings['static_path'] = MEDIA_ROOT
+settings['cookie_secret'] = "your-cookie-secret"
+settings['xsrf_cookies'] = True
+settings['template_loader'] = template.Loader(TEMPLATE_ROOT)
 
-DEBUG = DEPLOYMENT != DeploymentType.PRODUCTION
-STATIC_MEDIA_SERVER = DEPLOYMENT == DeploymentType.SOLO
-TEMPLATE_DEBUG = DEBUG
-SSL_ENABLED = DEBUG
-
-INTERNAL_IPS = ('127.0.0.1',)
-
-# Logging
-
-if DEBUG:
-    LOG_LEVEL = logging.DEBUG
-else:
-    LOG_LEVEL = logging.INFO
-
-# Only log to syslog if this is not a solo developer server.
-USE_SYSLOG = DEPLOYMENT != DeploymentType.SOLO
-
-# Cache Backend
-
-CACHE_TIMEOUT = 3600
-MAX_CACHE_ENTRIES = 10000
-CACHE_MIDDLEWARE_SECONDS = 3600
-CACHE_MIDDLEWARE_KEY_PREFIX = ''
-
-# Don't require developers to install memcached, and also make debugging easier
-# because cache is automatically wiped when the server reloads.
-if DEPLOYMENT == DeploymentType.SOLO:
-    CACHE_BACKEND = ('locmem://?timeout=%(CACHE_TIMEOUT)d'
-            '&max_entries=%(MAX_CACHE_ENTRIES)d' % locals())
-else:
-    CACHE_BACKEND = ('memcached://127.0.0.1:11211/?timeout=%(CACHE_TIMEOUT)d'
-            '&max_entries=%(MAX_CACHE_ENTRIES)d' % locals())
-
-# E-mail Server
-
-if DEPLOYMENT != DeploymentType.SOLO:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_USER = 'YOU@YOUR-SITE.com'
-    EMAIL_HOST_PASSWORD = 'PASSWORD'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-DEFAULT_FROM_EMAIL = "Bueda Support <support@bueda.com>"
-SERVER_EMAIL = "Bueda Operations <ops@bueda.com>"
-
-CONTACT_EMAIL = 'support@bueda.com'
-
-# Internationalization
-
-TIME_ZONE = 'UTC'
-LANGUAGE_CODE = 'en-us'
-USE_I18N = False
-
-# Testing
-
-# Use nosetests instead of unittest
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
-# Paths
-
-MEDIA_ROOT = path(ROOT, 'media')
-MEDIA_URL = '/media/'
-ADMIN_MEDIA_PREFIX = '/media/admin'
-ROOT_URLCONF = 'urls'
-
-# Version Information
-
-# Grab the current commit SHA from git - handy for confirming the version
-# deployed on a remote server is the one you think it is.
-import subprocess
-GIT_COMMIT = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'],
-    stdout=subprocess.PIPE).communicate()[0].strip()
-del subprocess
-
-# Database
-
-DATABASES = {}
-
-if DEPLOYMENT == DeploymentType.PRODUCTION:
-    DATABASES['default'] = {
-        'NAME': 'boilerplate',
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'your-database.com',
-        'PORT': '',
-        'USER': 'boilerplate',
-        'PASSWORD': 'your-password'
-    }
-elif DEPLOYMENT == DeploymentType.DEV:
-    DATABASES['default'] = {
-        'NAME': 'boilerplate_dev',
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'your-database.com',
-        'PORT': '',
-        'USER': 'boilerplate',
-        'PASSWORD': 'your-password'
-    }
-elif DEPLOYMENT == DeploymentType.STAGING:
-    DATABASES['default'] = {
-        'NAME': 'boilerplate_staging',
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'your-database.com',
-        'PORT': '',
-        'USER': 'boilerplate',
-        'PASSWORD': 'your-password'
-    }
-else:
-    DATABASES['default'] = {
-        'NAME': 'db',
-        'ENGINE': 'django.db.backends.sqlite3',
-        'HOST': '',
-        'PORT': '',
-        'USER': '',
-        'PASSWORD': ''
-    }
-
-# Message Broker (for Celery)
-
-BROKER_HOST = "localhost"
-BROKER_PORT = 5672
-BROKER_USER = "boilerplate"
-BROKER_PASSWORD = "boilerplate"
-BROKER_VHOST = "boilerplate"
-CELERY_RESULT_BACKEND = "amqp"
-
-# Run tasks eagerly in development, so developers don't have to keep a celeryd
-# processing running.
-CELERY_ALWAYS_EAGER = DEPLOYMENT == DeploymentType.SOLO
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-
-# South
-
-# Speed up testing when you have lots of migrations.
-SOUTH_TESTS_MIGRATE = False
-SKIP_SOUTH_TESTS = True
-
-# Logging
-
-SYSLOG_FACILITY = logging.handlers.SysLogHandler.LOG_LOCAL0
 SYSLOG_TAG = "boilerplate"
+SYSLOG_FACILITY = logging.handlers.SysLogHandler.LOG_LOCAL2
 
-# See PEP 391 and logconfig.py for formatting help.  Each section of LOGGING
+# See PEP 391 and logconfig for formatting help.  Each section of LOGGERS
 # will get merged into the corresponding section of log_settings.py.
 # Handlers and log levels are set up automatically based on LOG_LEVEL and DEBUG
 # unless you set them here.  Messages will not propagate through a logger
 # unless propagate: True is set.
 LOGGERS = {
-    'loggers': {
+   'loggers': {
         'boilerplate': {},
     },
 }
 
-logconfig.initialize_logging(SYSLOG_TAG, SYSLOG_FACILITY, LOGGERS, LOG_LEVEL,
-        USE_SYSLOG)
-
-# Debug Toolbar
-
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False
-}
-
-# Application Settings
-
-SECRET_KEY = 'TODO-generate-a-new-secret-key'
-
-LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/'
-
-# Middleware
-
-middleware_list = [
-    'commonware.log.ThreadRequestMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'comrade.core.middleware.HttpMethodsMiddleware',
-]
-
-if DEPLOYMENT != DeploymentType.SOLO:
-    middleware_list += [
-        'django.middleware.transaction.TransactionMiddleware',
-        'commonware.middleware.SetRemoteAddrFromForwardedFor',
-    ]
+if settings['debug']:
+    LOG_LEVEL = logging.DEBUG
 else:
-    middleware_list += [
-        'comrade.core.middleware.ArgumentLogMiddleware',
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ]
+    LOG_LEVEL = logging.INFO
+USE_SYSLOG = DEPLOYMENT != DeploymentType.SOLO
 
-MIDDLEWARE_CLASSES = tuple(middleware_list)
+logconfig.initialize_logging(SYSLOG_TAG, SYSLOG_FACILITY, LOGGERS,
+        LOG_LEVEL, USE_SYSLOG)
 
-# Templates
-
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.eggs.Loader',
-)
-
-if DEPLOYMENT != DeploymentType.SOLO:
-    TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
-    )
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.request',
-    'django.core.context_processors.csrf',
-    'django.core.context_processors.media',
-    'django.contrib.messages.context_processors.messages',
-
-    'comrade.core.context_processors.default',
-    'django.core.context_processors.media',
-)
-
-TEMPLATE_DIRS = (
-    path(ROOT, 'templates')
-)
-
-apps_list = [
-        'django.contrib.auth',
-        'django.contrib.admin',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.sites',
-        'django.contrib.markup',
-        'django.contrib.messages',
-
-        'TODO',
-        'your',
-        'apps',
-        'here',
-]
-
-if DEPLOYMENT == DeploymentType.SOLO:
-    apps_list += [
-        'django_extensions',
-        'debug_toolbar',
-        'django_nose',
-    ]
-
-INSTALLED_APPS = tuple(apps_list)
+if options.config:
+    tornado.options.parse_config_file(options.config)

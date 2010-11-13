@@ -9,8 +9,7 @@ path = lambda *a: os.path.join(ROOT, *a)
 
 prev_sys_path = list(sys.path)
 
-site.addsitedir(path('apps'))
-site.addsitedir(path('lib'))
+site.addsitedir(path('handlers'))
 if os.path.exists(path('vendor')):
     for directory in os.listdir(path('vendor')):
         full_path = path('vendor/%s' % directory)
@@ -24,5 +23,3 @@ for item in list(sys.path):
         new_sys_path.append(item)
         sys.path.remove(item)
 sys.path[:0] = new_sys_path
-
-os.environ['CELERY_LOADER'] = "django"

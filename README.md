@@ -1,14 +1,15 @@
-django-boilerplate -- a standard layout for Django apps
+tornado-boilerplate -- a standard layout for Tornado apps
 ===============================================================================
 
 ## Description
 
-django-boilerplate is an attempt to set up an convention for Django app layouts,
-to assist in writing utilites to deploy such applications. A bit of convention
-can go a long way, if one method is not better than another.
+tornado-boilerplate is an attempt to set up an convention for Tornado app
+layouts, to assist in writing utilites to deploy such applications. A bit of
+convention can go a long way, if one method is not better than another.
 
 This app layout is the one assumed by [buedafab](https://github.com/bueda/ops),
-and is somewhat of a sister project.
+and is a sister project to our
+[django-boilerplate](https://github.com/bueda/django-boilerplate).
 
 ## Acknowledgements
 
@@ -17,15 +18,13 @@ were the primary inspiration for this layout.
 
 ## Directory Structure
 
-    django-boilerplate/
-        apps/
+    tornado-boilerplate/
+        handlers/
             foo/
                 templates/
                      foo/
                         foo.html
-                models.py
-                views.py
-                forms.py
+                handlers.py
         lib/
         logconfig/
         media/
@@ -42,20 +41,18 @@ were the primary inspiration for this layout.
         vendor/
         environment.py
         fabfile.py
-        manage.py
+        app.py
         settings.py
 
-### apps
+### handlers
 
 Everything in this directory is added to the `PYTHONPATH` when the
 `environment.py` file is imported.
 
 ### lib
 
-Python packages and modules that aren't true Django 'apps' - i.e. they don't
-have their own models, views or forms. These are just regular Python classes and
-methods, and they don't go in the `INSTALLED_APPS` list of your project's
-settings file. 
+Python packages and modules that aren't really Tornado request handlers. These
+are just regular Python classes and methods.
 
 Everything in this directory is added to the `PYTHONPATH` when the
 `environment.py` file is imported.
@@ -91,7 +88,7 @@ or ever installed, so it tends to quickly become out of date.
 ### templates
 
 Project-wide templates (i.e. those not belonging to any specific app in the
-`apps/` folder). The boilerplate includes a `base.html` template that defines
+`handlers/` folder). The boilerplate includes a `base.html` template that defines
 these blocks:
 
 #### <head>
@@ -125,6 +122,17 @@ fight snakes on a plane is with jQuery on a plane.
 `js` - Just like the `css` block, use the `js` block for page-specific Javascript files
 when you don't want to wipe out the site-wide defaults in `site_js`.
 
+#### TODO
+
+This needs to be tested with Tornado's templating language. A quick
+look at the documentation indicates that this basic template is compatible, but
+none of our Tornado applications are using templates at the moment, so it hasn't
+been tested.
+
+The boilerplate also needs to create a template Loader that looks in the proper
+directories - i.e. both the root `templates/` and `templates/` subdirectories in
+each handler.
+
 ### vendor
 
 Python package dependencies installed as git submodules. pip's support for git
@@ -142,10 +150,10 @@ Any directory in `vendor/` is added to the `PYTHONPATH` by `environment.py`.
 
 #### environment.py
 
-Modifies the `PYTHONPATH` to allow importing from the `apps/`, `lib/` and
+Modifies the `PYTHONPATH` to allow importing from the `handlers/`, `lib/` and
 `vendor/` directories. This module is imported at the top of `settings.py` to
-make sure it runs for both local development (using Django's built-in server)
-and in production (run through mod-wsgi, gunicorn, etc.).
+make sure it runs for both local development and in production (run through
+mod-wsgi, gunicorn, etc.).
 
 #### fabfile.py
 
@@ -154,11 +162,13 @@ environments. The boilerplate Fabfile is quite thin, as most of the commands are
 imported from [buedafab](https://github.com/bueda/ops), a collection of our
 Fabric utilites.
 
-#### manage.py
+#### app.py
 
-The standard Django `manage.py`.
+The main Tornado application, and also a runnable file that starts the Tornado 
+server.
 
 #### settings.py
 
-Many good default settings for Django applications - check the file for more
-detailed documentation.
+A place to collect application settings ala Django. There's undoubtedly a better
+way to do this, considering all of the flak Django is taking lately for this
+global config. For now, it works.

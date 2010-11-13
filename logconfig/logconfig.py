@@ -1,7 +1,7 @@
-"""
-An extended version of the log_settings module from zamboni:
+"""An extended version of the log_settings module from zamboni:
 https://github.com/jbalogh/zamboni/blob/master/log_settings.py
 """
+from tornado.options import _LogFormatter as TornadoLogFormatter
 import logging, logging.handlers
 import os.path
 import types
@@ -63,11 +63,15 @@ def initialize_logging(syslog_tag, syslog_facility, loggers,
                 'datefmt': '%H:%M:%s',
                 'format': '%s: [%%(REMOTE_ADDR)s] %s' % (syslog_tag, base_fmt),
             },
+            'tornado': {
+                '()': TornadoLogFormatter,
+                'color': True
+            },
         },
         'handlers': {
             'console': {
                 '()': logging.StreamHandler,
-                'formatter': 'debug'
+                'formatter': 'tornado'
             },
             'null': {
                 '()': NullHandler,
