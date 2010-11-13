@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>{% block title %}Bueda.me{% endblock %}</title>
+
+        <link rel="icon" type="image/x-icon"
+                href="{{ MEDIA_URL }}images/favicon.ico" />
+
+        {% block site_css %}
+        <link href="{{ MEDIA_URL }}css/reset.css" rel="stylesheet"
+            type="text/css" media="all"/>
+        <link href="{{ MEDIA_URL }}css/base.css" rel="stylesheet"
+            type="text/css" media="screen"/>
+        {% endblock %}
+        {% block css %}{% endblock %}
+        {% block extra_head %}{% endblock %}
+    </head>
+
+    <body>
+        <div id="header">
+            {% block header %}{% endblock %}
+        </div>
+
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+
+        <div id="footer">
+            {% block footer %}{% endblock %}
+        </div>
+
+        {% ifnotequal DEPLOYMENT "PRODUCTION" %}
+            <p>Revision: {{ GIT_COMMIT }}</p>
+        {% endifnotequal %}
+
+        {% block site_js %}
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/application.js"></script>
+
+        {% ifequal DEPLOYMENT "SOLO" %}
+        <script type="text/javascript"
+            src="{{ MEDIA_URL }}js/vendor/jquery-1.4.4.js"></script>
+        {% else %}
+        {% if request.is_secure %}
+        <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js">
+        </script>
+        {% else %}
+        <script type="text/javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js">
+        </script>
+        {% endif %}
+        {% endifequal %}
+
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'YOUR-GA-ACCOUNT']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+
+        {% endblock %}
+
+        {% block js %}{% endblock %}
+    </body>
+</html>

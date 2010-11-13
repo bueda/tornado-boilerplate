@@ -1,0 +1,3 @@
+[submodule "vendor/comrade"]
+	path = vendor/comrade
+	url = https://github.com/bueda/django-comrade.git

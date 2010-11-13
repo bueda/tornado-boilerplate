@@ -1,15 +1,10 @@
+"""Add the boilerplate's directories to Python's site-packages path.
+"""
 import os
 import site
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-if os.path.splitext(os.path.basename(__file__))[0] == 'cProfile':
-    if os.environ.get('DJANGO_APP_PATH'):
-        ROOT = os.environ['DJANGO_APP_PATH']
-    else:
-        print 'When using cProfile you must set $DJANGO_APP_PATH'
-        sys.exit(2)
-
 path = lambda *a: os.path.join(ROOT, *a)
 
 prev_sys_path = list(sys.path)
