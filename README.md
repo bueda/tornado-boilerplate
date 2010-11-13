@@ -7,6 +7,9 @@ django-boilerplate is an attempt to set up an convention for Django app layouts,
 to assist in writing utilites to deploy such applications. A bit of convention
 can go a long way, if one method is not better than another.
 
+This app layout is the one assumed by [buedafab](https://github.com/bueda/ops),
+and is somewhat of a sister project.
+
 ## Acknowledgements
 
 The folks at Mozilla working on the [next version of AMO](https://github.com/jbalogh/zamboni)
