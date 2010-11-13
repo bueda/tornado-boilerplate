@@ -20,11 +20,8 @@ were the primary inspiration for this layout.
 
     tornado-boilerplate/
         handlers/
-            foo/
-                templates/
-                     foo/
-                        foo.html
-                handlers.py
+            foo.py
+            base.py
         lib/
         logconfig/
         media/
@@ -128,10 +125,6 @@ This needs to be tested with Tornado's templating language. A quick
 look at the documentation indicates that this basic template is compatible, but
 none of our Tornado applications are using templates at the moment, so it hasn't
 been tested.
-
-The boilerplate also needs to create a template Loader that looks in the proper
-directories - i.e. both the root `templates/` and `templates/` subdirectories in
-each handler.
 
 ### vendor
 
