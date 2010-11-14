@@ -3,9 +3,10 @@ tornado-boilerplate -- a standard layout for Tornado apps
 
 ## Description
 
-tornado-boilerplate is an attempt to set up an convention for Tornado app
-layouts, to assist in writing utilites to deploy such applications. A bit of
-convention can go a long way, if one method is not better than another.
+tornado-boilerplate is an attempt to set up an convention for
+[Tornado](http://www.tornadoweb.org/) app layouts, to assist in writing utilites
+to deploy such applications. A bit of convention can go a long way, if one
+method is not better than another.
 
 This app layout is the one assumed by [buedafab](https://github.com/bueda/ops),
 and is a sister project to our
@@ -165,3 +166,18 @@ server.
 A place to collect application settings ala Django. There's undoubtedly a better
 way to do this, considering all of the flak Django is taking lately for this
 global config. For now, it works.
+
+## Contributing
+
+If you have improvements or bug fixes:
+
+* Fork the repository on GitHub
+* File an issue for the bug fix/feature request in GitHub
+* Create a topic branch
+* Push your modifications to that branch
+* Send a pull request
+
+## Authors
+
+* [Bueda Inc.](http://www.bueda.com)
+* Christopher Peplin, peplin@bueda.com, @[peplin](http://twitter.com/peplin)
