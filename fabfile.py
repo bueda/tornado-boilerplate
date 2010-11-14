@@ -16,7 +16,7 @@ from buedafab.tasks import (setup, restart_webserver, rollback, enable,
 # For a description of these attributes, see https://github.com/bueda/ops
 
 env.unit = "boilerplate"
-env.path = "/var/django/%(unit)s" % env
+env.path = "/var/webapps/%(unit)s" % env
 env.scm = "git@github.com:bueda/%(unit)s.git" % env
 env.scm_http_url = "http://github.com/bueda/%(unit)s" % env
 env.root_dir = os.path.abspath(os.path.dirname(__file__))
