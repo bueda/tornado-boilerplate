@@ -5,12 +5,9 @@ tornado-boilerplate -- a standard layout for Tornado apps
 
 tornado-boilerplate is an attempt to set up an convention for
 [Tornado](http://www.tornadoweb.org/) app layouts, to assist in writing
-utilities to deploy such applications. A bit of convention can go a long way, if
-one method is not better than another.
+utilities to deploy such applications. A bit of convention can go a long way.
 
-This app layout is the one assumed by [buedafab](https://github.com/bueda/ops),
-and is a sister project to our
-[django-boilerplate](https://github.com/bueda/django-boilerplate).
+This app layout is the one assumed by [buedafab](https://github.com/bueda/ops).
 
 ### Related Projects
 
@@ -51,6 +48,8 @@ were the primary inspiration for this layout.
 
 ### handlers
 
+All of your Tornado RequestHandlers go in this directory.
+
 Everything in this directory is added to the `PYTHONPATH` when the
 `environment.py` file is imported.
 
@@ -73,22 +72,28 @@ project's `settings.py` that sets Python's logging system. The default for
 server deployments is to log to syslog, and the default for solo development is
 simply to log to the console. 
 
+All of your loggers should be children of your app's root logger (defined in
+`settings.py`). This works well at the top of every file that needs logging:
+
+    import logging
+    logger = logging.getLogger('five.' + __name__)
+
 ### media
 
-Just an arbitrary convention - a subfolder each for CSS, Javascript and images.
-3rd-party files (e.g. the 960.gs CSS files or jQuery) go in a `vendor/`
-subfolder to keep your own code separate.
+A subfolder each for CSS, Javascript and images. Third-party files (e.g. the
+960.gs CSS or jQuery) go in a `vendor/` subfolder to keep your own code
+separate.
 
 ### requirements
 
 pip requirements files, optionally one for each app environment. The
 `common.txt` is installed in every case.
 
-Our Fabfile (see below) is set up to install the project's dependencies from
-these files. It's an attempt to standardize the location for dependencies like
-Rails' `Gemfile`. We specifically avoid also listing the dependencies in the
-README of the project, since a list there isn't actually checked programatically
-or ever installed, so it tends to quickly become out of date.
+Our Fabfile (see below) installs the project's dependencies from these files.
+It's an attempt to standardize the location for dependencies like Rails'
+`Gemfile`. We also specifically avoid listing the dependencies in the README of
+the project, since a list there isn't checked programmatically or ever actually
+installed, so it tends to quickly become out of date.
 
 ### templates
 
@@ -137,32 +142,36 @@ been tested.
 
 ### vendor
 
-Python package dependencies installed as git submodules. pip's support for git
+Python package dependencies loaded as git submodules. pip's support for git
 repositories is somewhat unreliable, and if the specific package is your own
 code it can be a bit easier to debug if it's all in one place (and not off in a
 virtualenv). 
 
 At Bueda we collect general webapp helpers and views in the separate package
 `comrade` and share it among all of our applications. It is included here as an
-example of a Python package as a git submodule.
+example of a Python package as a git submodule (comrade itself should't be
+considered part of this boilerplate - while it might be useful, it's much less
+generic).
 
-Any directory in `vendor/` is added to the `PYTHONPATH` by `environment.py`.
+Any directory in `vendor/` is added to the `PYTHONPATH` by `environment.py`. The
+packages are *not* installed with pip, however, so if they require any
+compilation (e.g. C/C++ extensions) this method will not work.
 
 ### Files
 
 #### environment.py
 
-Modifies the `PYTHONPATH` to allow importing from the `handlers/`, `lib/` and
+Modifies the `PYTHONPATH` to allow importing from the `apps/`, `lib/` and
 `vendor/` directories. This module is imported at the top of `settings.py` to
-make sure it runs for both local development and in production (run through
-mod-wsgi, gunicorn, etc.).
+make sure it runs for both local development (using Django's built-in server)
+and in production (run through mod-wsgi, gunicorn, etc.).
 
 #### fabfile.py
 
-We use Fabric to deploy to remote servers in development, staging and production
-environments. The boilerplate Fabfile is quite thin, as most of the commands are
-imported from [buedafab](https://github.com/bueda/ops), a collection of our
-Fabric utilities.
+We use [Fabric](http://fabfile.org/) to deploy to remote servers in development,
+staging and production environments. The boilerplate Fabfile is quite thin, as
+most of the commands are imported from [buedafab](https://github.com/bueda/ops),
+a collection of our Fabric utilities.
 
 #### app.py
 
