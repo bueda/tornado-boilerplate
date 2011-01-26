@@ -1,5 +1,5 @@
-from handlers import FooHandler
+from handlers.foo import FooHandler
 
 url_patterns = [
-    (r"/foo/([^/]+)/", FooHandler),
+    (r"/foo", FooHandler),
 ]

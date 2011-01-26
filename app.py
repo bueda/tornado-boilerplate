@@ -3,7 +3,6 @@
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
-import tornado.template
 from tornado.options import options
 
 from settings import settings
