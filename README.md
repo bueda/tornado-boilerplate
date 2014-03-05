@@ -9,6 +9,8 @@ utilities to deploy such applications. A bit of convention can go a long way.
 
 This app layout is the one assumed by [buedafab](https://github.com/bueda/ops).
 
+Tested with Tornado v3.2 
+
 ### Related Projects
 
 [buedafab](https://github.com/bueda/ops)
