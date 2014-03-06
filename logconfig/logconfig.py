@@ -1,7 +1,7 @@
 """An extended version of the log_settings module from zamboni:
 https://github.com/jbalogh/zamboni/blob/master/log_settings.py
 """
-from tornado.options import _LogFormatter as TornadoLogFormatter
+from tornado.log import LogFormatter as TornadoLogFormatter
 import logging, logging.handlers
 import os.path
 import types
