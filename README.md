@@ -72,7 +72,7 @@ module from Mozilla's [zamboni](https://github.com/jbalogh/zamboni).
 This package includes an `initialize_logging` method meant to be called from the
 project's `settings.py` that sets Python's logging system. The default for
 server deployments is to log to syslog, and the default for solo development is
-simply to log to the console. 
+simply to log to the console.
 
 All of your loggers should be children of your app's root logger (defined in
 `settings.py`). This works well at the top of every file that needs logging:
@@ -109,7 +109,7 @@ these blocks:
 append/prepend to it in sub-templates using `{{ super }}`.
 
 `site_css` - Primary CSS files for the site. By default, includes
-`media/css/reset.css` and `media/css/base.css`. 
+`media/css/reset.css` and `media/css/base.css`.
 
 `css` - Optional page-specific CSS - empty by default. Use this block if a page
 needs an extra CSS file or two, but doesn't want to wipe out the files already
@@ -147,7 +147,7 @@ been tested.
 Python package dependencies loaded as git submodules. pip's support for git
 repositories is somewhat unreliable, and if the specific package is your own
 code it can be a bit easier to debug if it's all in one place (and not off in a
-virtualenv). 
+virtualenv).
 
 At Bueda we collect general webapp helpers and views in the separate package
 `comrade` and share it among all of our applications. It is included here as an
@@ -177,7 +177,7 @@ a collection of our Fabric utilities.
 
 #### app.py
 
-The main Tornado application, and also a runnable file that starts the Tornado 
+The main Tornado application, and also a runnable file that starts the Tornado
 server.
 
 #### settings.py
@@ -200,3 +200,4 @@ If you have improvements or bug fixes:
 
 * [Bueda Inc.](http://www.bueda.com)
 * Christopher Peplin, peplin@bueda.com, @[peplin](http://twitter.com/peplin)
+* Aman Guatam
