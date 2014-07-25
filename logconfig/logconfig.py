@@ -1,12 +1,14 @@
 """An extended version of the log_settings module from zamboni:
 https://github.com/jbalogh/zamboni/blob/master/log_settings.py
 """
+from __future__ import absolute_import
+
 from tornado.log import LogFormatter as TornadoLogFormatter
 import logging, logging.handlers
 import os.path
 import types
 
-import dictconfig
+from logconfig import dictconfig
 
 # Pulled from commonware.log we don't have to import that, which drags with
 # it Django dependencies.

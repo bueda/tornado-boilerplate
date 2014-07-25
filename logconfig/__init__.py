@@ -1,1 +1,2 @@
-from logconfig import initialize_logging
+from __future__ import absolute_import
+from logconfig.logconfig import initialize_logging
