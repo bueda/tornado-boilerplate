@@ -12,7 +12,7 @@ TEST_MODULES = [
 def all():
     try:
         return unittest.defaultTestLoader.loadTestsFromNames(TEST_MODULES)
-    except AttributeError, e:
+    except AttributeError as e:
         if "'module' object has no attribute 'test_" in str(e):
             # most likely because of an import error
             for m in TEST_MODULES:
